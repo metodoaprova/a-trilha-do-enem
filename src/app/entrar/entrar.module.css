@@ -1,0 +1,43 @@
+.pagina { min-height: 100vh; background: var(--faixa); }
+
+/* os dois cartões lado a lado */
+.duas {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 5vw, 64px);
+  align-items: start; max-width: 1080px; margin: 0 auto; padding-block: clamp(28px, 6vw, 72px);
+}
+@media (max-width: 820px) {
+  .duas { grid-template-columns: minmax(0, 1fr); }
+  .antes { order: -1; }
+}
+
+.cartao {
+  background: var(--cartao); border: 1px solid var(--linha); border-radius: 8px; box-shadow: var(--sombra);
+  padding: clamp(22px, 4vw, 36px) clamp(18px, 3.5vw, 32px); display: flex; flex-direction: column; gap: 14px;
+}
+.titulo { margin: 0; text-align: center; font-size: 28px; font-weight: 400; color: var(--texto); }
+.subtitulo { margin: 0; text-align: center; color: var(--suave); font-size: 15px; line-height: 1.45; }
+.divisor { width: 100%; border: 0; border-top: 1px solid var(--linha); margin: 10px 0; }
+
+.pilha { display: flex; flex-direction: column; gap: 14px; }
+
+/* campo com ícone à esquerda */
+.campoIcone {
+  display: flex; align-items: stretch; border: 1.5px solid var(--linha-forte); border-radius: 6px; overflow: hidden; background: var(--cartao);
+}
+.campoIcone:focus-within { border-color: var(--azul); box-shadow: 0 0 0 3px rgba(31, 107, 255, 0.15); }
+.icone { flex: 0 0 46px; display: grid; place-items: center; background: var(--neutro-fundo); color: var(--suave); border-right: 1.5px solid var(--linha-forte); }
+.campoIcone input { flex: 1; min-width: 0; min-height: 46px; border: 0; padding: 0 14px; font: inherit; font-size: 15.5px; color: var(--texto); background: transparent; outline: none; }
+.oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.botao { width: 100%; min-height: 50px; border-radius: 4px; font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.03em; margin-top: 4px; }
+
+.ajuda { display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--texto-2); }
+.ajuda strong { font-size: 19px; font-weight: 500; color: var(--texto); margin-bottom: 2px; }
+.nota { color: var(--suave); font-size: 14px; margin-top: 8px; line-height: 1.45; }
+
+.caixa { display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: 8px; background: var(--cartao-2); border: 1px solid var(--destaque-borda); }
+.caixa .nota { margin-top: 0; }
+.check { display: flex; align-items: flex-start; gap: 10px; font-size: 15px; cursor: pointer; }
+.check input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--azul); flex: 0 0 auto; }
+.link { background: none; border: 0; padding: 0; font: inherit; font-weight: 600; color: var(--ciano-texto); cursor: pointer; text-decoration: underline; }
+.pilha > .link { align-self: flex-start; }
