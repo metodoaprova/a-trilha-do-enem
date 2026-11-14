@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { responderQuestao, type Correcao } from '../../actions';
+import { estatisticaQuestao, responderQuestao, type Correcao, type EstatQuestao } from '../../actions';
 import { TextoAlternativa, TextoRico } from '@/components/TextoRico';
 
 export type Alternativa = { letra: string; texto: string };
@@ -27,7 +27,9 @@ export function ResponderQuestao({ questaoId, alternativas, inicial, figuras = [
   );
   const [refazendo, setRefazendo] = useState(false);
   const [agora, setAgora] = useState(false);   // true quando a correção veio de uma resposta dada agora
-  const [verResolucao, setVerResolucao] = useState(true);
+  const [aba, setAba] = useState<'gabarito' | 'estat'>('gabarito');
+  const [estat, setEstat] = useState<EstatQuestao | null>(null);
+  const [erroEstat, setErroEstat] = useState('');
   const [erro, setErro] = useState('');
   const [pendente, iniciar] = useTransition();
   const c = refazendo ? null : correcao;
@@ -40,8 +42,16 @@ export function ResponderQuestao({ questaoId, alternativas, inicial, figuras = [
       // dentro da lista vale a primeira resposta; "tentar de novo" vira treino
       const r = await responderQuestao(questaoId, escolha, refazendo || correcao ? null : lista);
       if (r.erro) return setErro(r.erro);
-      if (r.correcao) { setCorrecao(r.correcao); setAgora(true); setRefazendo(false); setVerResolucao(true); }
+      if (r.correcao) { setCorrecao(r.correcao); setAgora(true); setRefazendo(false); setAba('gabarito'); setEstat(null); }
     });
+  }
+
+  async function abrirEstat() {
+    setAba('estat');
+    if (estat) return;
+    setErroEstat('');
+    const r = await estatisticaQuestao(questaoId);
+    if (r.erro) setErroEstat(r.erro); else if (r.estat) setEstat(r.estat);
   }
 
   function riscar(letra: string) {
@@ -126,15 +136,54 @@ export function ResponderQuestao({ questaoId, alternativas, inicial, figuras = [
               {pct !== null && <span><b>{pct}%</b> dos alunos acertam</span>}
             </div>
           ) : null}
-          {c.comentario ? (
-            <div className="q-resolucao">
-              <button type="button" className="q-link" onClick={() => setVerResolucao((v) => !v)} aria-expanded={verResolucao}>
-                {verResolucao ? 'Esconder a resolução comentada' : 'Ver a resolução comentada'}
-              </button>
-              {verResolucao && <div className="q-resolucao-texto"><TextoRico texto={c.comentario} /></div>}
-            </div>
+          <div className="q-abas" role="tablist" aria-label="Depois de responder">
+            <button type="button" role="tab" aria-selected={aba === 'gabarito'} onClick={() => setAba('gabarito')}>Gabarito comentado</button>
+            <button type="button" role="tab" aria-selected={aba === 'estat'} onClick={abrirEstat}>Estatísticas</button>
+          </div>
+          {aba === 'gabarito' ? (
+            c.comentario ? (
+              <div className="q-resolucao-texto" role="tabpanel">
+                <p className="q-gabarito-linha">✓ A alternativa <b>{c.resposta}</b> está correta.</p>
+                <TextoRico texto={c.comentario} />
+              </div>
+            ) : (
+              <span className="suave" style={{ fontSize: 14 }} role="tabpanel">A resolução comentada desta questão será publicada em breve. Gabarito: <b>{c.resposta}</b>.</span>
+            )
           ) : (
-            <span className="suave" style={{ fontSize: 14 }}>A resolução comentada desta questão será publicada em breve.</span>
+            <div className="q-estat" role="tabpanel">
+              {erroEstat ? <span className="suave">{erroEstat}</span> : !estat ? <span className="suave">Carregando…</span> : (
+                <>
+                  <div className="q-estat-topo">
+                    <span className="q-anel" style={{ ['--p' as string]: `${estat.total ? Math.round((100 * estat.acertos) / estat.total) : 0}` }}>
+                      <b>{estat.total ? Math.round((100 * estat.acertos) / estat.total) : 0}%</b><small>acertos</small>
+                    </span>
+                    <div>
+                      <strong>Desempenho da questão</strong>
+                      <span className="suave">{estat.total} {estat.total === 1 ? 'resposta enviada' : 'respostas enviadas'} pelos alunos</span>
+                      <div className="q-estat-caixas">
+                        <span><small>Acertos</small><b>{estat.acertos}</b></span>
+                        <span><small>Erros</small><b>{estat.total - estat.acertos}</b></span>
+                      </div>
+                    </div>
+                  </div>
+                  <strong style={{ fontSize: 15 }}>Alternativas marcadas</strong>
+                  <span className="suave" style={{ fontSize: 13 }}>Cada tentativa conta como uma marcação.</span>
+                  <div className="q-estat-barras">
+                    {['A', 'B', 'C', 'D', 'E'].map((L) => {
+                      const n = estat.letras[L] ?? 0;
+                      const p = estat.total ? Math.round((100 * n) / estat.total) : 0;
+                      return (
+                        <div key={L} className="q-estat-barra" data-certa={L === c.resposta || undefined}>
+                          <b>{L}</b><em>{L === c.resposta ? 'Gabarito' : ''}</em>
+                          <span className="q-estat-trilho"><span style={{ width: `${p}%` }} /></span>
+                          <span className="q-estat-n">{n} · {p}%</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
           )}
           <div className="linha-flex">
             {c.video_url && <a href={c.video_url} target="_blank" rel="noopener" className="btn btn-linha">Resolução em vídeo</a>}

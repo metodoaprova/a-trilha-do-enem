@@ -41,7 +41,7 @@ export function FiltrosBanco({ grupos, inicial, pp }: { grupos: GrupoFiltro[]; i
   const comAtual = (lista: string[], atual: string) => (atual && !lista.includes(atual) ? [atual, ...lista] : lista);
 
   return (
-    <form method="get" className={s.filtrosAluno} aria-label="Filtros">
+    <form method="get" className={`${s.filtrosAluno} q-filtros-form`} aria-label="Filtros">
       {pp && <input type="hidden" name="pp" value={pp} />}
       <div className="campo">
         <label htmlFor="far">Área</label>
@@ -96,16 +96,18 @@ export function FiltrosBanco({ grupos, inicial, pp }: { grupos: GrupoFiltro[]; i
           {Object.entries(ORIGENS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
       </div>
-      <div className="campo">
-        <label htmlFor="fs">Situação</label>
-        <select id="fs" name="s" value={f.s} onChange={muda('s')}>
-          <option value="">Todas</option>
-          <option value="nao_feitas">Ainda não fiz</option>
-          <option value="erradas">Errei</option>
-          <option value="acertadas">Acertei</option>
-        </select>
-      </div>
-      <div className="linha-flex" style={{ gap: 8, alignSelf: 'end' }}>
+      <fieldset className="q-situacao">
+        <legend>Situação</legend>
+        <div className="q-seg">
+        {[['', 'Todas'], ['nao_feitas', 'Não resolvidas'], ['erradas', 'Errei'], ['acertadas', 'Acertei']].map(([v, r]) => (
+          <label key={v || 'todas'} data-marcado={f.s === v || undefined}>
+            <input type="radio" name="s" value={v} checked={f.s === v} onChange={muda('s')} />
+            {r}
+          </label>
+        ))}
+        </div>
+      </fieldset>
+      <div className="q-filtros-botoes">
         <button className="btn btn-azul">Filtrar</button>
         <a href="/aluno/questoes" className="btn btn-linha">Limpar</a>
       </div>

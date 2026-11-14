@@ -1,9 +1,9 @@
-import Link from 'next/link';
 import { NIVEIS, ORIGENS } from '@/lib/assuntos';
 import { AREAS_CURTO, IDIOMAS } from '@/lib/acesso';
 import type { QuestaoCompleta } from '@/lib/questao';
 import { TextoRico } from '@/components/TextoRico';
 import { ImagemQuestao } from '@/components/ImagemQuestao';
+import { AvisarErro } from '@/components/AvisarErro';
 import { ResponderQuestao, type Alternativa } from '@/app/aluno/questoes/[id]/ResponderQuestao';
 
 const APLIC: Record<string, string> = { REG: '', PPL: 'PPL', REA: 'Reaplicação', DIG: 'Digital', D4: 'Reaplicação' };
@@ -36,7 +36,7 @@ export function CartaoQuestao({ q, numero, total, id, lista }: { q: QuestaoCompl
           {emTexto && q.imagem && (
             <a href={q.imagem} target="_blank" rel="noopener" className="q-acao" title="Ver esta questão como aparece no caderno do ENEM">Ver na prova</a>
           )}
-          <Link href={`/aluno/duvidas?ctx=${encodeURIComponent(`Banco · ${q.codigo}`)}`} className="q-acao">Perguntar ao professor</Link>
+          <AvisarErro questaoId={q.id} />
         </div>
       </header>
       <div className="q-corpo">

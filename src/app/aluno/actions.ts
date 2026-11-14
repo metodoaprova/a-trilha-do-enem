@@ -116,3 +116,37 @@ export async function apagarLista(f: FormData): Promise<void> {
   await supabase.from('listas_questoes').delete().eq('id', String(f.get('id') ?? '')).eq('aluno_id', id);
   revalidatePath('/aluno/questoes', 'layout');
 }
+
+// ---------- Desempenho, estatística da questão, caderno de erros ----------
+export async function zerarHistorico(): Promise<{ ok?: string; erro?: string }> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc('zerar_historico_questoes');
+  if (error) return { erro: 'Não foi possível apagar agora. ' + error.message };
+  revalidatePath('/aluno', 'layout');
+  return { ok: `Histórico apagado (${data ?? 0} respostas). As de hoje continuam contando no limite do dia.` };
+}
+
+export type EstatQuestao = { total: number; acertos: number; letras: Record<string, number> };
+export async function estatisticaQuestao(questao: string): Promise<{ erro?: string; estat?: EstatQuestao }> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc('estatistica_questao', { p_questao: questao });
+  if (error) return { erro: /0014|estatistica_questao/.test(error.message) ? 'As estatísticas chegam em breve.' : error.message };
+  return { estat: data as EstatQuestao };
+}
+
+export async function avisarErroQuestao(questao: string, motivo: string, texto: string): Promise<{ ok?: string; erro?: string }> {
+  const supabase = await createClient();
+  const { error } = await supabase.rpc('avisar_erro_questao', { p_questao: questao, p_motivo: motivo, p_texto: texto });
+  if (error) return { erro: error.message };
+  return { ok: 'Obrigado! O professor vai conferir esta questão.' };
+}
+
+// "Resolver tudo" do caderno de erros: monta uma lista com as questões pendentes
+export async function resolverCaderno(f: FormData): Promise<void> {
+  const supabase = await createClient();
+  const area = String(f.get('area') ?? '') || null;
+  const disciplina = String(f.get('disciplina') ?? '') || null;
+  const { data, error } = await supabase.rpc('lista_caderno_erros', { p_area: area, p_disciplina: disciplina });
+  if (error || !data) redirect(`/aluno/questoes/erros?erro=${encodeURIComponent(error?.message ?? 'Não foi possível montar a lista.')}`);
+  redirect(`/aluno/questoes/lista/${data}`);
+}

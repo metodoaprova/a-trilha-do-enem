@@ -1,0 +1,40 @@
+.hero { padding: clamp(20px, 3vw, 30px); display: flex; flex-direction: column; gap: 16px; }
+.heroTopo { display: flex; justify-content: space-between; gap: 18px; align-items: center; }
+.hero h2 { margin: 8px 0 6px; font-size: clamp(26px, 3vw, 34px); line-height: 1.1; }
+.hero p { margin: 0; color: var(--texto-2); max-width: 52ch; }
+.selo { display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 999px; background: #fff; color: #0f1b3d; font-size: 13px; font-weight: 700; }
+.selo i { width: 8px; height: 8px; border-radius: 50%; background: #fb923c; }
+.anel { --p: 0; flex: 0 0 auto; width: 112px; height: 112px; border-radius: 50%; display: grid; place-items: center; align-content: center; color: #fff;
+  background: radial-gradient(closest-side, #0a2a7a 80%, transparent 81% 100%), conic-gradient(#3fc6ff calc(var(--p) * 1%), rgba(255, 255, 255, 0.16) 0); }
+.anel b { font-size: 26px; line-height: 1; }
+.anel small { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.8; }
+.contas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.contas span { display: flex; flex-direction: column; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.22); background: rgba(255, 255, 255, 0.06); }
+.contas b { font-size: 24px; }
+.contas small { font-size: 13px; opacity: 0.85; }
+.botaoClaro { width: 100%; min-height: 50px; border: 0; border-radius: 12px; background: #fff; color: #1546b8; font: inherit; font-weight: 800; font-size: 16px; cursor: pointer; }
+.botaoClaro:hover { filter: brightness(0.97); }
+
+.grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 16px; }
+.disc { padding: 20px; border-radius: 18px; color: #fff; background: linear-gradient(140deg, #1f6bff, #0b3ab8 55%, #062473); display: flex; flex-direction: column; gap: 14px; box-shadow: 0 10px 30px rgba(11, 58, 184, 0.25); }
+.discTopo { display: flex; justify-content: space-between; gap: 12px; }
+.disc h3 { margin: 6px 0 2px; font-size: 21px; }
+.discTopo span { font-size: 14px; opacity: 0.9; }
+.comece { display: inline-block; padding: 3px 10px; border-radius: 999px; background: #fff; color: #1546b8 !important; font-size: 12px !important; font-weight: 800; opacity: 1 !important; }
+.pend { display: flex; flex-direction: column; align-items: flex-end; font-size: 13px; }
+.pend b { font-size: 30px; line-height: 1; }
+.barra { display: block; height: 8px; border-radius: 99px; background: rgba(255, 255, 255, 0.2); overflow: hidden; }
+.barra span { display: block; height: 100%; background: #3fc6ff; border-radius: 99px; }
+.feito { font-weight: 700; }
+.disc form, .hero form { width: 100%; }
+
+.semanas { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 12px; }
+.semanas > div { padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+.semanas .barra { background: var(--trilho); }
+.semanas .barra span { background: #22c55e; }
+.vazio { margin: 0; padding: 18px; border: 1.5px dashed var(--linha-forte); border-radius: 14px; color: var(--suave); }
+
+@media (max-width: 560px) {
+  .heroTopo { flex-direction: column-reverse; align-items: flex-start; }
+  .anel { width: 92px; height: 92px; }
+}

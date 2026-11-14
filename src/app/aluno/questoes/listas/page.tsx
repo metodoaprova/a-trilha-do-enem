@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { acessoAtual } from '@/lib/acesso';
+import { AbasQuestoes } from '@/components/desempenho/AbasQuestoes';
 import { Caminho, PAINEL_ALUNO } from '@/components/Caminho';
 import { respostasDasListas } from '@/lib/questao';
 import { apagarLista } from '../../actions';
@@ -27,6 +28,7 @@ export default async function Listas({ searchParams }: { searchParams: Promise<{
   return (
     <>
       <Caminho passos={[PAINEL_ALUNO, { rotulo: 'Banco de questões', href: '/aluno/questoes' }, { rotulo: 'Listas sob medida' }]} />
+      <AbasQuestoes atual="listas" />
       <div className={s.cabeca}>
         <h1 className={`display ${s.titulo}`}>Listas sob medida</h1>
         <p className="suave" style={{ margin: 0, maxWidth: '64ch' }}>

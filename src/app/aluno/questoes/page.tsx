@@ -6,6 +6,8 @@ import { buscarQuestoes, filtroDaUrl, urlFiltro } from '@/lib/banco';
 import { carregarQuestoes, porPagina as lerPorPagina } from '@/lib/questao';
 import { Caderno } from '@/components/Caderno';
 import { FiltrosBanco, type GrupoFiltro } from './FiltrosBanco';
+import { AbasQuestoes } from '@/components/desempenho/AbasQuestoes';
+import { TamanhoTexto } from '@/components/TamanhoTexto';
 import s from '../aluno.module.css';
 
 export const metadata = { title: 'Questões · A Trilha do ENEM' };
@@ -30,6 +32,7 @@ export default async function BancoQuestoes({ searchParams }: { searchParams: Pr
   return (
     <>
       <Caminho passos={[PAINEL_ALUNO, { rotulo: 'Questões' }]} />
+      <AbasQuestoes atual="resolver" />
       <div className="linha-flex" style={{ justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <div className={s.cabeca}>
           <h1 className={`display ${s.titulo}`}>{filtro.ar && AREAS[filtro.ar] ? `Questões de ${AREAS[filtro.ar]}` : 'Questões do ENEM'}</h1>
@@ -37,7 +40,6 @@ export default async function BancoQuestoes({ searchParams }: { searchParams: Pr
             {feitas.length} resolvidas · {feitas.length ? `${Math.round((100 * acertos) / feitas.length)}% de acertos` : 'nenhuma ainda'}
           </span>
         </div>
-        <Link href="/aluno/questoes/listas" className="btn btn-linha">Montar uma lista sob medida</Link>
       </div>
 
       {!acesso.completo && (
@@ -47,19 +49,28 @@ export default async function BancoQuestoes({ searchParams }: { searchParams: Pr
         </div>
       )}
 
-      <details className="q-filtros" open={filtrosAtivos > 0 || undefined}>
-        <summary>
-          <span>Filtrar questões</span>
-          {filtrosAtivos > 0 && <span className="q-filtros-n">{filtrosAtivos} {filtrosAtivos === 1 ? 'filtro ativo' : 'filtros ativos'}</span>}
-        </summary>
-        <FiltrosBanco grupos={grupos} inicial={{ ar: filtro.ar, d: filtro.d, i: filtro.i, h: filtro.h, a: filtro.a, n: filtro.n, o: filtro.o, s: filtro.s }} pp={sp.pp ? String(pp) : undefined} />
-      </details>
-
-      {total === 0 ? (
-        <p className="suave" style={{ margin: 0 }}>Nenhuma questão com esses filtros ainda.</p>
-      ) : (
-        <Caderno questoes={questoes} total={total} pagina={pagina} porPagina={pp} base={base} />
-      )}
+      <div className="q-layout">
+        <aside className="q-lado">
+          <details className="q-filtros" open>
+            <summary>
+              <span>Filtrar questões</span>
+              {filtrosAtivos > 0 && <span className="q-filtros-n">{filtrosAtivos} {filtrosAtivos === 1 ? 'filtro ativo' : 'filtros ativos'}</span>}
+            </summary>
+            <FiltrosBanco grupos={grupos} inicial={{ ar: filtro.ar, d: filtro.d, i: filtro.i, h: filtro.h, a: filtro.a, n: filtro.n, o: filtro.o, s: filtro.s }} pp={sp.pp ? String(pp) : undefined} />
+          </details>
+        </aside>
+        <div className="q-principal">
+          <div className="q-exibindo">
+            <span>Exibindo <b>{total}</b> {total === 1 ? 'questão' : 'questões'} no total.</span>
+            <TamanhoTexto />
+          </div>
+          {total === 0 ? (
+            <p className="suave" style={{ margin: 0 }}>Nenhuma questão com esses filtros ainda.</p>
+          ) : (
+            <Caderno questoes={questoes} total={total} pagina={pagina} porPagina={pp} base={base} />
+          )}
+        </div>
+      </div>
     </>
   );
 }

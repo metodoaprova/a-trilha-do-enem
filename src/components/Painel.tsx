@@ -21,6 +21,8 @@ const ICONES: Record<string, string> = {
   alerta: 'M12 3l10 17H2zM12 10v4M12 17h.01',
   banco: 'M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zM4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6',
   sair: 'M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11',
+  erros: 'M6 3h11a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6zM6 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2M10 10l4 4m0-4-4 4',
+  menu: 'M4 7h16M4 12h16M4 17h16',
 };
 
 export type ItemPainel = {
@@ -136,8 +138,32 @@ function MenuConta({ nome, itens }: { nome: string; itens: ItemConta[] }) {
   );
 }
 
-export function Painel({ itens, rodape, inicio, nome, menuConta = [], selo, children }: {
-  itens: ItemPainel[]; rodape?: ItemPainel[]; inicio: string; nome: string; menuConta?: ItemConta[]; selo?: string; children: React.ReactNode;
+export type ItemBarra = { href: string; rotulo: string; icone: keyof typeof ICONES; destaque?: boolean; exato?: boolean; exceto?: string[] };
+
+// Barra de navegação no pé da tela (só no celular): atalhos + "Menu" (abre o menu lateral) + perfil
+function BarraCelular({ itens, nome, perfil, abrirMenu, menuAberto }: { itens: ItemBarra[]; nome: string; perfil: string; abrirMenu: () => void; menuAberto: boolean }) {
+  const rota = usePathname();
+  const ativo = (i: ItemBarra) => (i.exato ? rota === i.href : (rota === i.href || rota.startsWith(i.href + '/')) && !(i.exceto ?? []).some((e) => rota.startsWith(e)));
+  return (
+    <nav className="barra-celular" aria-label="Atalhos">
+      {itens.map((i) => (
+        <Link key={i.href} href={i.href} className={`barra-item${i.destaque ? ' barra-destaque' : ''}`} aria-current={ativo(i) ? 'page' : undefined}>
+          <Icone nome={i.icone} /><span>{i.rotulo}</span>
+        </Link>
+      ))}
+      <button type="button" className="barra-item" aria-controls="menu-lateral" aria-expanded={menuAberto} onClick={abrirMenu}>
+        <Icone nome="menu" /><span>Menu</span>
+      </button>
+      <Link href={perfil} className="barra-item" aria-current={rota === perfil ? 'page' : undefined}>
+        <span className="barra-avatar" aria-hidden="true">{(nome.trim()[0] || '?').toUpperCase()}</span><span>{nome.split(' ')[0] || 'Perfil'}</span>
+      </Link>
+    </nav>
+  );
+}
+
+export function Painel({ itens, rodape, inicio, nome, menuConta = [], selo, barra, perfil = '/aluno/conta', children }: {
+  itens: ItemPainel[]; rodape?: ItemPainel[]; inicio: string; nome: string; menuConta?: ItemConta[]; selo?: string;
+  barra?: ItemBarra[]; perfil?: string; children: React.ReactNode;
 }) {
   const [aberto, setAberto] = useState(false);
   const rota = usePathname();
@@ -151,7 +177,7 @@ export function Painel({ itens, rodape, inicio, nome, menuConta = [], selo, chil
   const fechar = () => setAberto(false);
 
   return (
-    <div className="painel" data-aberto={aberto ? 'sim' : 'nao'}>
+    <div className="painel" data-aberto={aberto ? 'sim' : 'nao'} data-barra={barra?.length ? 'sim' : undefined}>
       <aside className="painel-lateral" id="menu-lateral" aria-label="Menu principal">
         <div className="painel-marca">
           <Marca href={inicio} />
@@ -185,6 +211,7 @@ export function Painel({ itens, rodape, inicio, nome, menuConta = [], selo, chil
         </header>
         <main className="painel-conteudo">{children}</main>
       </div>
+      {barra?.length ? <BarraCelular itens={barra} nome={nome} perfil={perfil} abrirMenu={() => setAberto(true)} menuAberto={aberto} /> : null}
     </div>
   );
 }

@@ -4,6 +4,9 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Perfil } from '@/lib/sessao';
 import type { Acesso } from '@/lib/acesso';
 import { CartaoCapa } from '@/components/CartaoCapa';
+import { PainelDesempenho } from '@/components/desempenho/PainelDesempenho';
+import { lerDesempenho, lerPeriodo } from '@/lib/desempenho';
+import d from '@/components/desempenho/desempenho.module.css';
 import s from './aluno.module.css';
 
 type Grupo = { area: string | null; n: number; feita: boolean };
@@ -16,8 +19,9 @@ const AREAS_CARTAO = [
 ];
 
 // Início de quem usa só o banco de questões (plano grátis ou banco completo)
-export async function InicioBanco({ supabase, perfil, acesso }: { supabase: SupabaseClient; perfil: Perfil; acesso: Acesso }) {
-  const { data } = await supabase.rpc('contagem_banco');
+export async function InicioBanco({ supabase, perfil, acesso, periodo: periodoUrl }: { supabase: SupabaseClient; perfil: Perfil; acesso: Acesso; periodo?: string }) {
+  const periodo = lerPeriodo(periodoUrl);
+  const [{ data }, { d: desemp, falta }] = await Promise.all([supabase.rpc('contagem_banco'), lerDesempenho(supabase, periodo)]);
   const grupos = ((data ?? []) as Grupo[]);
   const porArea = new Map<string, { total: number; feitas: number }>();
   grupos.forEach((g) => {
@@ -31,11 +35,11 @@ export async function InicioBanco({ supabase, perfil, acesso }: { supabase: Supa
 
   return (
     <>
-      <div className={s.cabeca}>
-        <h1 className="display" style={{ margin: 0, fontSize: 'clamp(28px, 3.2vw, 38px)' }}>Olá, {perfil.nome || 'estudante'}</h1>
-        <p className="suave" style={{ margin: 0 }}>Banco de questões do ENEM · {acesso.completo ? 'acesso completo' : 'plano grátis'}</p>
-      </div>
-
+      <section className={`cartao-gradiente ${d.ola}`} aria-labelledby="ola">
+        <span className={d.selo}>{acesso.completo ? 'Banco completo' : 'Plano grátis'}</span>
+        <h1 id="ola" className="display">Olá, {(perfil.nome || 'estudante').split(' ')[0]}!</h1>
+        <p>Acompanhe o seu progresso e alcance as suas metas de estudo.</p>
+      </section>
       {!acesso.completo && (
         <section className="cartao" style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 10 }} aria-labelledby="hoje">
           <div className="linha-flex" style={{ justifyContent: 'space-between' }}>
@@ -55,6 +59,8 @@ export async function InicioBanco({ supabase, perfil, acesso }: { supabase: Supa
           </div>
         </section>
       )}
+
+      <PainelDesempenho d={desemp} periodo={periodo} base="/aluno" falta={falta} zerar={false} />
 
       <section className={s.grupo} aria-labelledby="areas">
         <h2 id="areas" className="display">Escolha a área</h2>
