@@ -90,6 +90,12 @@
   .numero b { font-size: 26px; }
   .miniItem { flex-direction: row; align-items: center; }
   .mini { grid-template-columns: minmax(0, 1fr); }
-  .linha { grid-template-columns: minmax(0, 1.4fr) 54px 54px; }
+  .linha { grid-template-columns: minmax(0, 1.4fr) 62px 52px; gap: 8px; }
+  .linhaCab { font-size: 11px; letter-spacing: 0.04em; }
   .linha .taxa { display: none; }
 }
+
+/* ===== Painel por área ===== */
+.areaTopo { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px 20px; flex-wrap: wrap; }
+.areaTopo h2 { margin: 0 0 4px; }
+.oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

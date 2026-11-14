@@ -6,7 +6,7 @@ import { SITE_CURSO } from '@/lib/marca';
 
 const ITENS: ItemPainel[] = [
   { href: '/aluno', rotulo: 'Início', icone: 'inicio', exato: true },
-  { href: '/aluno/questoes', rotulo: 'Questões', icone: 'questoes', exceto: ['/aluno/questoes/listas', '/aluno/questoes/lista', '/aluno/questoes/erros'] },
+  { href: '/aluno/questoes/desempenho', rotulo: 'Banco de questões', icone: 'questoes', tambem: ['/aluno/questoes'], exceto: ['/aluno/questoes/listas', '/aluno/questoes/lista', '/aluno/questoes/erros'] },
   { href: '/aluno/questoes/erros', rotulo: 'Caderno de erros', icone: 'erros' },
   { href: '/aluno/questoes/listas', rotulo: 'Listas sob medida', icone: 'listas', tambem: ['/aluno/questoes/lista'] },
   { href: '/aluno/planos', rotulo: 'Planos', icone: 'banco' },
@@ -15,7 +15,7 @@ const RODAPE: ItemPainel[] = [{ href: '/aluno/conta', rotulo: 'Minha conta', ico
 const BARRA: ItemBarra[] = [
   { href: '/aluno', rotulo: 'Início', icone: 'inicio', exato: true },
   { href: '/aluno/questoes/erros', rotulo: 'Erros', icone: 'erros' },
-  { href: '/aluno/questoes', rotulo: 'Questões', icone: 'questoes', destaque: true, exceto: ['/aluno/questoes/erros'] },
+  { href: '/aluno/questoes/desempenho', rotulo: 'Questões', icone: 'questoes', destaque: true, tambem: ['/aluno/questoes'], exceto: ['/aluno/questoes/erros', '/aluno/questoes/listas', '/aluno/questoes/lista'] },
 ];
 const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_URL || 'https://wa.me/5584991037180';
 const CONTA: ItemConta[] = [

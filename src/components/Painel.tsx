@@ -138,12 +138,16 @@ function MenuConta({ nome, itens }: { nome: string; itens: ItemConta[] }) {
   );
 }
 
-export type ItemBarra = { href: string; rotulo: string; icone: keyof typeof ICONES; destaque?: boolean; exato?: boolean; exceto?: string[] };
+export type ItemBarra = { href: string; rotulo: string; icone: keyof typeof ICONES; destaque?: boolean; exato?: boolean; exceto?: string[]; tambem?: string[] };
 
 // Barra de navegação no pé da tela (só no celular): atalhos + "Menu" (abre o menu lateral) + perfil
 function BarraCelular({ itens, nome, perfil, abrirMenu, menuAberto }: { itens: ItemBarra[]; nome: string; perfil: string; abrirMenu: () => void; menuAberto: boolean }) {
   const rota = usePathname();
-  const ativo = (i: ItemBarra) => (i.exato ? rota === i.href : (rota === i.href || rota.startsWith(i.href + '/')) && !(i.exceto ?? []).some((e) => rota.startsWith(e)));
+  const ativo = (i: ItemBarra) => {
+    if (i.exato) return rota === i.href;
+    if ((i.exceto ?? []).some((e) => rota.startsWith(e))) return false;
+    return rota === i.href || rota.startsWith(i.href + '/') || (i.tambem ?? []).some((t) => rota.startsWith(t));
+  };
   return (
     <nav className="barra-celular" aria-label="Atalhos">
       {itens.map((i) => (

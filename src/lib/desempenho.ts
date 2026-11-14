@@ -11,12 +11,13 @@ export const lerPeriodo = (v?: string): Periodo => (PERIODOS.some((p) => p.id ==
 
 export type DiaGrafico = { dia: string; acertos: number; erros: number };
 export type LinhaArea = { area: string | null; disciplina: string | null; acertos: number; erros: number };
+export type LinhaAssunto = LinhaArea & { assunto: string | null };
 export type Desempenho = {
   resolvidas: number; acertos: number; erros: number;
-  diario: DiaGrafico[]; por_area: LinhaArea[]; dias: string[]; ultima: string | null;
+  diario: DiaGrafico[]; por_area: LinhaArea[]; por_assunto: LinhaAssunto[]; dias: string[]; ultima: string | null;
 };
 
-const VAZIO: Desempenho = { resolvidas: 0, acertos: 0, erros: 0, diario: [], por_area: [], dias: [], ultima: null };
+const VAZIO: Desempenho = { resolvidas: 0, acertos: 0, erros: 0, diario: [], por_area: [], por_assunto: [], dias: [], ultima: null };
 
 export async function lerDesempenho(supabase: SupabaseClient, periodo: Periodo): Promise<{ d: Desempenho; falta: boolean }> {
   const dias = PERIODOS.find((p) => p.id === periodo)?.dias ?? null;

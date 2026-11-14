@@ -3,6 +3,7 @@ import { AREAS_CURTO } from '@/lib/acesso';
 import { PERIODOS, pct, sequencias, type Desempenho, type Periodo } from '@/lib/desempenho';
 import { GraficoDiario } from './GraficoDiario';
 import { ZerarHistorico } from './ZerarHistorico';
+import { PainelArea } from './PainelArea';
 import { Ic } from './Icones';
 import s from './desempenho.module.css';
 
@@ -110,6 +111,8 @@ export function PainelDesempenho({ d, periodo, base, falta = false, saudacao, ze
           })}
         </div>
       </section>
+
+      <PainelArea linhas={d.por_assunto ?? []} periodo={rotuloPeriodo ?? ''} />
 
       {zerar && (
         <section className={`cartao ${s.zona}`} aria-labelledby="zerar-t">

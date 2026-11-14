@@ -31,7 +31,7 @@ export default async function BancoQuestoes({ searchParams }: { searchParams: Pr
 
   return (
     <>
-      <Caminho passos={[PAINEL_ALUNO, { rotulo: 'Questões' }]} />
+      <Caminho passos={[PAINEL_ALUNO, { rotulo: 'Banco de questões', href: '/aluno/questoes/desempenho' }, { rotulo: 'Resolver questões' }]} />
       <AbasQuestoes atual="resolver" />
       <div className="linha-flex" style={{ justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <div className={s.cabeca}>

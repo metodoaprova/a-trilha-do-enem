@@ -64,7 +64,7 @@ export default async function CadernoDeErros({ searchParams }: { searchParams: P
 
   return (
     <>
-      <Caminho passos={[PAINEL_ALUNO, { rotulo: 'Questões', href: '/aluno/questoes' }, { rotulo: 'Caderno de erros' }]} />
+      <Caminho passos={[PAINEL_ALUNO, { rotulo: 'Banco de questões', href: '/aluno/questoes/desempenho' }, { rotulo: 'Caderno de erros' }]} />
       <AbasQuestoes atual="erros" />
       <div className={s.cabeca}>
         <h1 className={`display ${s.titulo}`}>Caderno de erros</h1>

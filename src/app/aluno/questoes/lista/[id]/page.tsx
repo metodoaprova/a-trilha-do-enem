@@ -50,7 +50,7 @@ export default async function ListaPagina({ params, searchParams }: { params: Pr
 
   return (
     <>
-      <Caminho passos={[PAINEL_ALUNO, { rotulo: 'Banco de questões', href: '/aluno/questoes' }, { rotulo: 'Listas', href: '/aluno/questoes/listas' }, { rotulo: lista.titulo }]} />
+      <Caminho passos={[PAINEL_ALUNO, { rotulo: 'Banco de questões', href: '/aluno/questoes/desempenho' }, { rotulo: 'Listas', href: '/aluno/questoes/listas' }, { rotulo: lista.titulo }]} />
       <div className={s.cabeca}>
         <span className="rotulo">Lista sob medida</span>
         <h1 className={`display ${s.titulo}`} style={{ fontSize: 'clamp(22px, 2.8vw, 30px)' }}>{lista.titulo}</h1>
